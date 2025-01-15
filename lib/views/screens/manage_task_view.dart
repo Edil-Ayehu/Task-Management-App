@@ -1,34 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/core/utils/app_textstyles.dart';
 
 class ManageTaskView extends StatelessWidget {
   const ManageTaskView({Key? key}) : super(key: key);
+  
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(),
+          _buildHeader(context),
           const SizedBox(height: 24),
-          const Text(
+          Text(
             'Manage your task',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: AppTextStyle.h2,
           ),
           const SizedBox(height: 24),
-          _buildProgressBars(),
+          _buildProgressBars(context),
           const SizedBox(height: 24),
-          _buildTimeFilter(),
+          _buildTimeFilter(context),
           const SizedBox(height: 24),
-          Expanded(child: _buildBarChart()),
-          _buildWeekDays(),
+          Expanded(child: _buildBarChart(context)),
+          _buildWeekDays(context),
         ],
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -41,19 +47,19 @@ class ManageTaskView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: colorScheme.primary,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Icon(Icons.add, color: Colors.white),
+              child: Icon(Icons.add, color: colorScheme.onPrimary),
             ),
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Color(0xFFF1F0F9),
+                color: colorScheme.surface,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Icon(Icons.notifications_outlined),
+              child: Icon(Icons.notifications_outlined, color: colorScheme.onSurface),
             ),
           ],
         ),
@@ -61,37 +67,25 @@ class ManageTaskView extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressBars() {
+  Widget _buildProgressBars(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Column(
       children: [
-        _buildProgressBar(
-          'In progress',
-          3,
-          const Color(0xFFB5B0EA),
-        ),
+        _buildProgressBar(context, 'In progress', 3, colorScheme.secondary),
         const SizedBox(height: 8),
-        _buildProgressBar(
-          'In review',
-          8,
-          Colors.grey.shade200,
-        ),
+        _buildProgressBar(context, 'In review', 8, colorScheme.surface),
         const SizedBox(height: 16),
-        _buildProgressBar(
-          'In progress',
-          6,
-          Colors.black,
-        ),
+        _buildProgressBar(context, 'In progress', 6, colorScheme.primary),
         const SizedBox(height: 8),
-        _buildProgressBar(
-          'In review',
-          1,
-          const Color(0xFFCED86B),
-        ),
+        _buildProgressBar(context, 'In review', 1, colorScheme.tertiary),
       ],
     );
   }
 
-  Widget _buildProgressBar(String label, int count, Color color) {
+  Widget _buildProgressBar(BuildContext context, String label, int count, Color color) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
@@ -101,80 +95,93 @@ class ManageTaskView extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label),
+          Text(label, style: AppTextStyle.withColor(AppTextStyle.bodyMedium, 
+            color == colorScheme.primary ? colorScheme.onPrimary : colorScheme.onSurface)),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text('$count'),
+            child: Text('$count', style: AppTextStyle.labelMedium),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTimeFilter() {
+  Widget _buildTimeFilter(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Row(
       children: [
-        const Icon(Icons.calendar_today, size: 20),
+        Icon(Icons.calendar_today, size: 20, color: colorScheme.onBackground),
         const SizedBox(width: 16),
-        _buildFilterChip('Day', false),
+        _buildFilterChip(context, 'Day', false),
         const SizedBox(width: 8),
-        _buildFilterChip('Week', true),
+        _buildFilterChip(context, 'Week', true),
         const SizedBox(width: 8),
-        _buildFilterChip('Month', false),
+        _buildFilterChip(context, 'Month', false),
       ],
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected) {
+  Widget _buildFilterChip(BuildContext context, String label, bool isSelected) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: isSelected ? const Color(0xFFCED86B) : Colors.grey.shade200,
+        color: isSelected ? colorScheme.tertiary : colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(label),
+      child: Text(
+        label,
+        style: AppTextStyle.withColor(
+          AppTextStyle.labelMedium,
+          isSelected ? colorScheme.onTertiary : colorScheme.onSurface,
+        ),
+      ),
     );
   }
 
-  Widget _buildBarChart() {
+  Widget _buildBarChart(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: List.generate(
         7,
-        (index) => _buildBar(),
+        (index) => _buildBar(context),
       ),
     );
   }
 
-  Widget _buildBar() {
+  Widget _buildBar(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
           width: 30,
           height: 60,
-          color: const Color(0xFFCED86B),
+          color: colorScheme.tertiary,
         ),
         Container(
           width: 30,
           height: 40,
-          color: const Color(0xFFB5B0EA),
+          color: colorScheme.secondary,
         ),
         Container(
           width: 30,
           height: 80,
-          color: Colors.black,
+          color: colorScheme.primary,
         ),
       ],
     );
   }
 
-  Widget _buildWeekDays() {
+  Widget _buildWeekDays(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: ['S', 'M', 'T', 'W', 'T', 'F', 'S']

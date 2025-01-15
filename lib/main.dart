@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/controllers/theme_controller.dart';
 import 'package:todo_app/core/utils/app_theme.dart';
 import 'package:todo_app/views/screens/edit_view.dart';
-import 'package:todo_app/views/screens/folder_view.dart';
 import 'package:todo_app/views/screens/manage_task_view.dart';
-import 'package:todo_app/views/screens/shield_view.dart';
+import 'package:todo_app/views/screens/settings_view.dart';
 import 'package:todo_app/views/screens/task_schedule_view.dart';
 
 void main() {
-  runApp(const TaskManagementApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeController(),
+      child: const TaskManagementApp(),
+    ),
+  );
 }
 
 class TaskManagementApp extends StatelessWidget {
@@ -15,11 +21,15 @@ class TaskManagementApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // This will follow system theme
-      home: const TaskManagementHome(),
+    return Consumer<ThemeController>(
+      builder: (context, themeController, _) {
+        return MaterialApp(
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeController.themeMode,
+          home: const TaskManagementHome(),
+        );
+      },
     );
   }
 }
@@ -38,7 +48,7 @@ class _TaskManagementHomeState extends State<TaskManagementHome> {
     ManageTaskView(),
     EditView(),
     TaskScheduleView(),
-    ShieldView(),
+    SettingsView(),
   ];
 
   @override

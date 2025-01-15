@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/core/utils/app_textstyles.dart';
 
 class TaskScheduleView extends StatelessWidget {
   const TaskScheduleView({super.key});
@@ -10,24 +11,26 @@ class TaskScheduleView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(),
+          _buildHeader(context),
           const SizedBox(height: 24),
-          const Text(
+          Text(
             'Task schedule',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: AppTextStyle.h2,
           ),
           const SizedBox(height: 24),
-          _buildDatePicker(),
+          _buildDatePicker(context),
           const SizedBox(height: 24),
-          _buildCalendar(),
+          _buildCalendar(context),
           const SizedBox(height: 24),
-          _buildTaskCard(),
+          _buildTaskCard(context),
         ],
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -38,45 +41,49 @@ class TaskScheduleView extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Color(0xFFF1F0F9),
+            color: colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: const Icon(Icons.notifications_outlined),
+          child: Icon(Icons.notifications_outlined, color: colorScheme.onSurface),
         ),
       ],
     );
   }
 
-  Widget _buildDatePicker() {
+  Widget _buildDatePicker(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.calendar_today, size: 20),
+          Icon(Icons.calendar_today, size: 20, color: colorScheme.onSurface),
           const SizedBox(width: 8),
-          const Text('27.07.2024'),
-          const Icon(Icons.arrow_drop_down),
+          Text('27.07.2024', style: AppTextStyle.withColor(AppTextStyle.bodyMedium, colorScheme.onSurface)),
+          Icon(Icons.arrow_drop_down, color: colorScheme.onSurface),
         ],
       ),
     );
   }
 
-  Widget _buildCalendar() {
+  Widget _buildCalendar(BuildContext context) {
     return Column(
       children: [
-        _buildWeekDays(),
+        _buildWeekDays(context),
         const SizedBox(height: 16),
-        _buildCalendarGrid(),
+        _buildCalendarGrid(context),
       ],
     );
   }
 
-  Widget _buildWeekDays() {
+  Widget _buildWeekDays(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
@@ -85,14 +92,17 @@ class TaskScheduleView extends StatelessWidget {
                 child: Text(
                   day,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: AppTextStyle.withColor(
+                    AppTextStyle.withWeight(AppTextStyle.bodyMedium, FontWeight.bold),
+                    colorScheme.onBackground,
+                  ),
                 ),
               ))
           .toList(),
     );
   }
 
-  Widget _buildCalendarGrid() {
+  Widget _buildCalendarGrid(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -103,19 +113,21 @@ class TaskScheduleView extends StatelessWidget {
       ),
       itemCount: 31,
       itemBuilder: (context, index) {
-        return _buildCalendarDay(index + 1);
+        return _buildCalendarDay(context, index + 1);
       },
     );
   }
 
-  Widget _buildCalendarDay(int day) {
-    Color backgroundColor = Colors.grey.shade200;
+  Widget _buildCalendarDay(BuildContext context, int day) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
+    Color backgroundColor = colorScheme.surface;
     if (day == 17 || day == 18) {
-      backgroundColor = Colors.black;
+      backgroundColor = colorScheme.primary;
     } else if (day == 25 || day == 26) {
-      backgroundColor = const Color(0xFFB5B0EA);
+      backgroundColor = colorScheme.secondary;
     } else if (day >= 8 && day <= 10) {
-      backgroundColor = const Color(0xFFCED86B);
+      backgroundColor = colorScheme.tertiary;
     }
 
     return Container(
@@ -126,19 +138,22 @@ class TaskScheduleView extends StatelessWidget {
       child: Center(
         child: Text(
           '$day',
-          style: TextStyle(
-            color: backgroundColor == Colors.black ? Colors.white : Colors.black,
+          style: AppTextStyle.withColor(
+            AppTextStyle.bodySmall,
+            backgroundColor == colorScheme.primary ? colorScheme.onPrimary : colorScheme.onSurface,
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTaskCard() {
+  Widget _buildTaskCard(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFCED86B),
+        color: colorScheme.tertiary,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -147,21 +162,21 @@ class TaskScheduleView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'User flow admin panel',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: AppTextStyle.withColor(AppTextStyle.buttonLarge, colorScheme.onTertiary),
               ),
               Row(
                 children: [
-                  const Text('8 Review'),
+                  Text('8 Review', style: AppTextStyle.withColor(AppTextStyle.bodyMedium, colorScheme.onTertiary)),
                   const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colorScheme.surface,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.arrow_forward, size: 16),
+                    child: Icon(Icons.arrow_forward, size: 16, color: colorScheme.onSurface),
                   ),
                 ],
               ),
@@ -170,17 +185,23 @@ class TaskScheduleView extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              const Icon(Icons.access_time, size: 16),
+              Icon(Icons.access_time, size: 16, color: colorScheme.onTertiary),
               const SizedBox(width: 4),
-              const Text('10:00 AM - 06:30 PM'),
+              Text(
+                '10:00 AM - 06:30 PM',
+                style: AppTextStyle.withColor(AppTextStyle.bodyMedium, colorScheme.onTertiary),
+              ),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text('High Priority'),
+                child: Text(
+                  'High Priority',
+                  style: AppTextStyle.withColor(AppTextStyle.labelMedium, colorScheme.onSurface),
+                ),
               ),
             ],
           ),
