@@ -17,7 +17,7 @@ void main() {
 }
 
 class TaskManagementApp extends StatelessWidget {
-  const TaskManagementApp({Key? key}) : super(key: key);
+  const TaskManagementApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class TaskManagementApp extends StatelessWidget {
 }
 
 class TaskManagementHome extends StatefulWidget {
-  const TaskManagementHome({Key? key}) : super(key: key);
+  const TaskManagementHome({super.key});
 
   @override
   State<TaskManagementHome> createState() => _TaskManagementHomeState();
@@ -53,31 +53,66 @@ class _TaskManagementHomeState extends State<TaskManagementHome> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: SafeArea(
         child: _pages[_selectedIndex],
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(30),
-          child: BottomNavigationBar(
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            selectedItemColor: Theme.of(context).colorScheme.onPrimary,
-            unselectedItemColor: Theme.of(context).colorScheme.onPrimary.withOpacity(0.5),
-            type: BottomNavigationBarType.fixed,
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.folder_outlined), label: ''),
-              BottomNavigationBarItem(icon: Icon(Icons.edit_outlined), label: ''),
-              BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: ''),
-              BottomNavigationBarItem(icon: Icon(Icons.shield_outlined), label: ''),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Container(
+          height: 60,
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: colorScheme.primary.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, -5),
+              ),
             ],
-            currentIndex: _selectedIndex,
-            onTap: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(0, Icons.folder_outlined, Icons.folder),
+              _buildNavItem(1, Icons.edit_outlined, Icons.edit),
+              _buildNavItem(
+                  2, Icons.calendar_today_outlined, Icons.calendar_today),
+              _buildNavItem(3, Icons.settings_outlined, Icons.settings),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(
+      int index, IconData unselectedIcon, IconData selectedIcon) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isSelected = _selectedIndex == index;
+
+    return GestureDetector(
+      onTap: () => setState(() => _selectedIndex = index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? colorScheme.primary.withOpacity(0.1)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: AnimatedScale(
+          scale: isSelected ? 1.2 : 1.0,
+          duration: const Duration(milliseconds: 200),
+          child: Icon(
+            isSelected ? selectedIcon : unselectedIcon,
+            color: isSelected
+                ? colorScheme.primary
+                : colorScheme.onSurface.withOpacity(0.6),
+            size: 24,
           ),
         ),
       ),
